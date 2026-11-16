@@ -1,0 +1,11 @@
+source 'https://rubygems.org'
+
+gemspec path: '..'
+
+gem 'rdoc'
+gem 'activerecord', '~> 8.0.0'
+gem 'railties', '~> 8.0.0'
+
+group :test do
+  gem 'sqlite3'
+end

@@ -1,18 +1,12 @@
 class Survey::Question < ActiveRecord::Base
-
   self.table_name = "survey_questions"
 
-  acceptable_attributes :text, :survey, :options_attributes => Survey::Option::AccessibleAttributes
+  belongs_to :survey, optional: false
+  has_many   :options, dependent: :destroy
 
-  # relations
-  belongs_to :survey
-  has_many   :options, :dependent => :destroy
-  accepts_nested_attributes_for :options,
-    :reject_if => ->(a) { a[:text].blank? },
-    :allow_destroy => true
+  accepts_nested_attributes_for :options, allow_destroy: true
 
-  # validations
-  validates :text, :presence => true, :allow_blank => false
+  validates :text, presence: true, allow_blank: false
 
   def correct_options
     return options.correct
