@@ -1,9 +1,9 @@
 class Survey::Answer < ActiveRecord::Base
   self.table_name = "survey_answers"
 
-  belongs_to :attempt
-  belongs_to :option
-  belongs_to :question
+  belongs_to :attempt, optional: false
+  belongs_to :option, optional: false
+  belongs_to :question, optional: false
 
   validates :option_id, :question_id, presence: true
   validates :option_id, uniqueness: { scope: [:attempt_id, :question_id] }

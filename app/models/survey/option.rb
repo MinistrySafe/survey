@@ -1,7 +1,7 @@
 class Survey::Option < ActiveRecord::Base
   self.table_name = "survey_options"
 
-  belongs_to :question
+  belongs_to :question, optional: false
 
   validates :text, presence: true, allow_blank: false
 

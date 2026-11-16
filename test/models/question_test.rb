@@ -6,6 +6,10 @@ class QuestionTest < ActiveSupport::TestCase
     should_be_persisted question
   end
 
+  test 'should not create a question without a survey' do
+    should_not_be_persisted create_question(survey: nil)
+  end
+
   test 'should not create a question with a empty or nil text fields' do
     question1 = create_question(text: nil)
     question2 = create_question(text: '')

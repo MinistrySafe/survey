@@ -1,8 +1,8 @@
 class Survey::Attempt < ActiveRecord::Base
   self.table_name = "survey_attempts"
 
-  belongs_to :survey
-  belongs_to :participant, polymorphic: true
+  belongs_to :survey, optional: false
+  belongs_to :participant, polymorphic: true, optional: false
   has_many :answers, dependent: :destroy
 
   accepts_nested_attributes_for :answers
@@ -14,7 +14,7 @@ class Survey::Attempt < ActiveRecord::Base
   scope :looses, -> { where(winner: false) }
   scope :scores, -> { order("score DESC") }
   scope :for_survey, ->(survey) { where(survey_id: survey.id) }
-  scope :exclude_survey,  ->(survey) { where("NOT survey_id = #{survey.id}") }
+  scope :exclude_survey, ->(survey) { where.not(survey_id: survey.id) }
   scope :for_participant, ->(participant) {
     where(participant_id: participant.try(:id),
           participant_type: participant.class.base_class.name)
@@ -37,6 +37,9 @@ class Survey::Attempt < ActiveRecord::Base
   private
 
   def check_number_of_attempts_by_survey
+    # Missing survey/participant is reported by the belongs_to validations.
+    return if survey.nil? || participant.nil?
+
     attempts = self.class.for_survey(survey).for_participant(participant)
     upper_bound = self.survey.attempts_number
 

@@ -1,7 +1,7 @@
 class Survey::Question < ActiveRecord::Base
   self.table_name = "survey_questions"
 
-  belongs_to :survey
+  belongs_to :survey, optional: false
   has_many   :options, dependent: :destroy
 
   accepts_nested_attributes_for :options, allow_destroy: true

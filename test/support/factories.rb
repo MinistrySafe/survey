@@ -11,6 +11,7 @@ end
 
 # Create a Survey::Question
 def create_question(opts = {})
+  opts = { survey: create_survey }.merge(opts) unless opts.key?(:survey)
   Survey::Question.create({
     text: ::Faker::Lorem.paragraph(sentence_count: 1),
     options_attributes: { option: correct_option_attributes }
@@ -24,6 +25,7 @@ end
 
 # Create a Survey::Option
 def create_option(opts = {})
+  opts = { question: create_question }.merge(opts) unless opts.key?(:question)
   Survey::Option.create(option_attributes.merge(opts))
 end
 
@@ -48,9 +50,9 @@ end
 def create_survey_with_questions(num)
   survey = create_survey
   num.times do
-    question = create_question
+    question = create_question(survey: survey)
     num.times do
-      question.options << create_option(correct_option_attributes)
+      create_option(correct_option_attributes.merge(question: question))
     end
     survey.questions << question
   end
